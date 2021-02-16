@@ -16,6 +16,7 @@ namespace TechJobsPersistent.Controllers
     public class HomeController : Controller
     {
         private JobDbContext context;
+        private Job newJob;
 
         public HomeController(JobDbContext dbContext)
         {
@@ -41,26 +42,38 @@ namespace TechJobsPersistent.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel)
+        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel, string[] selectedSkills)
         {
-            return View();
+           
             if (ModelState.IsValid)
             {
                 Job newJob = new Job
                 {
-                    //NEED TO FINISH
                     Name = addJobViewModel.Name,
-                    Employer = context.Employers.Find(addJobViewModel.EmployerId),
-
+                    EmployerId = addJobViewModel.EmployerId
                 };
+
+                for (var i = 0; i < selectedSkills.Length; i++)
+                {
+                    int jobId = newJob.Id;
+                    JobSkill jobSkill = new JobSkill
+                    {
+                        Job = newJob,
+                        SkillId = int.Parse(selectedSkills[i])
+                    };
+                    context.JobSkills.Add(jobSkill);
+                }
+
                 context.Jobs.Add(newJob);
                 context.SaveChanges();
 
-                return Redirect("Index");
-            }
-
-            return View(addJobViewModel);
+                return Redirect("/Home");
+         
         }
+
+            return View("AddJob", addJobViewModel);
+        }
+
 
         public IActionResult Detail(int id)
         {
