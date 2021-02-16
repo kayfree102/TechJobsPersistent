@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace TechJobsPersistent.Models
 {
     public class Employer
@@ -15,6 +17,11 @@ namespace TechJobsPersistent.Models
         {
             Name = name;
             Location = location;
+        }
+
+        internal static void Add(SelectListItem selectListItem)
+        {
+            throw new NotImplementedException();
         }
     }
 }
